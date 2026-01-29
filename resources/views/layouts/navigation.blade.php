@@ -10,15 +10,33 @@
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
+                <!-- Navigation Links - SHOW ONLY WHEN LOGGED IN -->
+                @auth
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    
+                    <!-- ADD THESE TICKET LINKS -->
+                    <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
+                        {{ __('My Tickets') }}
+                    </x-nav-link>
+                    
+                    <x-nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
+                        {{ __('New Ticket') }}
+                    </x-nav-link>
+                    
+                    @if(Auth::user()->is_admin ?? false)
+                        <x-nav-link :href="url('/admin')" target="_blank">
+                            {{ __('Admin Panel') }}
+                        </x-nav-link>
+                    @endif
                 </div>
+                @endauth
             </div>
 
-            <!-- Settings Dropdown -->
+            <!-- Settings Dropdown - SHOW ONLY WHEN LOGGED IN -->
+            @auth
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -51,6 +69,21 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @endauth
+
+            <!-- Login/Register buttons for guests -->
+            @guest
+            <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
+                <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-gray-900">
+                    {{ __('Log in') }}
+                </a>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 hover:text-gray-900">
+                        {{ __('Register') }}
+                    </a>
+                @endif
+            </div>
+            @endguest
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -66,10 +99,26 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        @auth
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            
+            <!-- ADD THESE FOR MOBILE -->
+            <x-responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
+                {{ __('My Tickets') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
+                {{ __('New Ticket') }}
+            </x-responsive-nav-link>
+            
+            @if(Auth::user()->is_admin ?? false)
+                <x-responsive-nav-link :href="url('/admin')" target="_blank">
+                    {{ __('Admin Panel') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
@@ -96,5 +145,18 @@
                 </form>
             </div>
         </div>
+        @else
+        <!-- Mobile guest menu -->
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('login')">
+                {{ __('Login') }}
+            </x-responsive-nav-link>
+            @if (Route::has('register'))
+                <x-responsive-nav-link :href="route('register')">
+                    {{ __('Register') }}
+                </x-responsive-nav-link>
+            @endif
+        </div>
+        @endauth
     </div>
 </nav>

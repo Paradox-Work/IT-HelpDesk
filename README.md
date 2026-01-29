@@ -88,3 +88,15 @@ php filament-debug.php made a file in root aka base of the project to debug
 
 ## Ticket 8 PM Intrusive thoughts of ending it all atp
 
+
+## Ticket 9:40 PM I realised my mistake and well, some part of previous ticket creation was useless btw; user interface:
+
+php artisan make:controller TicketController --resource --model=Ticket
+#
+php artisan make:controller UserTicketController --resource
+#
+php artisan make:view tickets.index
+#
+php artisan make:view tickets.create
+#
+php artisan make:view tickets.show

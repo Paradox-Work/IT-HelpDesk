@@ -9,9 +9,9 @@ class CreateTicket extends CreateRecord
 {
     protected static string $resource = TicketResource::class;
 
+    // Automatically assign logged-in user when creating a ticket
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Automatically assign the logged-in user
         $data['user_id'] = auth()->id();
         return $data;
     }

@@ -10,12 +10,14 @@ Route::get('/', function () {
     return view('home');
 });
 
-/// Admin redirect
 Route::get('/admin', function () {
-    if (Auth::check()) {
-        return redirect('/admin/dashboard');
+    // Check if user is logged in AND is admin
+    if (Auth::check() && Auth::user()->is_admin) {
+        // Admin user - let them through to Filament
+        return redirect('/admin'); // This will hit Filament's routes
     }
-    return redirect('/admin/login');
+    // Non-admin user - redirect to dashboard or home
+    return redirect('/dashboard');
 });
 
 // Protected routes (logged in users)

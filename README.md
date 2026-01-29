@@ -1,4 +1,4 @@
-## About Our Project
+## About Our Project (Im tired of scrolling: php artisan db:seed --class=TicketSeeder)
 
 Raivo is gay
 
@@ -100,3 +100,6 @@ php artisan make:view tickets.index
 php artisan make:view tickets.create
 #
 php artisan make:view tickets.show
+
+## Ticket Admin Check
+php artisan make:migration add_is_admin_to_users_table

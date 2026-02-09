@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Tickets\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 
 class TicketForm
@@ -15,6 +17,7 @@ class TicketForm
             TextInput::make('user_id')
                 ->default(fn () => auth()->id())
                 ->hidden()
+                ->dehydrated(false)
                 ->label('Created By'),
 
             TextInput::make('title')
@@ -25,6 +28,26 @@ class TicketForm
                 ->required()
                 ->label('Description')
                 ->columnSpanFull(),
+
+            FileUpload::make('attachment')
+                ->label('Photo')
+                ->image()
+                ->disk('public')
+                ->directory('ticket-attachments')
+                ->maxSize(5120)
+                ->nullable()
+                ->visible(fn ($record) => $record === null),
+
+            Placeholder::make('attachment_view')
+                ->label('Photo')
+                ->content(function ($record) {
+                    if (! $record || ! $record->attachment) {
+                        return 'No attachment';
+                    }
+                    $url = \Illuminate\Support\Facades\Storage::url($record->attachment);
+                    return new \Illuminate\Support\HtmlString('<a href="' . e($url) . '" target="_blank" class="text-primary-600 underline">View attachment</a>');
+                })
+                ->visible(fn ($record) => $record !== null),
 
             Select::make('priority')
                 ->required()

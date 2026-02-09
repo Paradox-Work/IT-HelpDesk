@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TicketReplies\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
@@ -15,13 +16,15 @@ class TicketReplyForm
            TextInput::make('user_id')
                     ->default(fn () => auth()->id())
                     ->hidden()
+                    ->dehydrated(false)
                     ->label('Created By'),
 
             // Ticket selection
             Select::make('ticket_id')
                 ->required()
-                ->relationship('ticket', 'title')
+                ->relationship('ticket', 'title', modifyQueryUsing: fn ($query) => $query->has('replies'))
                 ->searchable()
+                ->preload()
                 ->label('Ticket'),
 
             // Message
@@ -31,9 +34,11 @@ class TicketReplyForm
                 ->label('Message'),
 
             // Optional attachment
-            TextInput::make('attachment')
+            FileUpload::make('attachment')
                 ->nullable()
-                ->label('Attachment'),
+                ->label('Attachment')
+                ->disk('public')
+                ->directory('ticket-replies'),
         ];
     }
 }

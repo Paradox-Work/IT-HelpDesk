@@ -22,6 +22,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // ===== ADD THESE TICKET ROUTES =====
     Route::resource('tickets', TicketController::class);
+    Route::post('/tickets/{ticket}/replies', [TicketController::class, 'storeReply'])->name('tickets.replies.store');
+    Route::get('/tickets/{ticket}/replies', [TicketController::class, 'pollReplies'])->name('tickets.replies.poll');
     // This creates all these routes automatically:
     // GET    /tickets          → tickets.index
     // GET    /tickets/create   → tickets.create  
@@ -37,4 +39,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php'; // Breeze auth routes
-

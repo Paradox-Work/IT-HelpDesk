@@ -6,6 +6,8 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Pages\Dashboard;
+use Filament\Navigation\MenuItem;
+use App\Filament\Widgets\TicketStats;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -24,6 +26,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->default()
 
             // 🎨 UI
             ->colors([
@@ -41,6 +44,16 @@ class AdminPanelProvider extends PanelProvider
             )
             ->pages([
                 Dashboard::class,
+            ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->widgets([
+                TicketStats::class,
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Account')
+                    ->url(fn () => url('/admin/profile'))
+                    ->icon('heroicon-o-user-circle'),
             ])
 
             // 🧠 REQUIRED middleware stack

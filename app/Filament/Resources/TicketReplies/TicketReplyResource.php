@@ -23,6 +23,8 @@ class TicketReplyResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'message';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     // <<< FIXED: return Schema, not Form
     public static function form(Schema $schema): Schema
     {

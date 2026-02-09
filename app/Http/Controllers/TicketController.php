@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Models\TicketReply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,11 +38,18 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'priority' => 'required|in:low,medium,high',
+            'attachment' => 'nullable|image|max:5120',
         ]);
+
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('ticket-attachments', 'public');
+        }
 
         Ticket::create([
             'title' => $request->title,
             'description' => $request->description,
+            'attachment' => $attachmentPath,
             'priority' => $request->priority,
             'status' => 'open',
             'user_id' => Auth::id(),
@@ -56,11 +64,11 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
-        // Ensure user can only view their own tickets
-        if ($ticket->user_id !== Auth::id()) {
+        if (! $this->canAccessTicket($ticket)) {
             abort(403);
         }
-        
+        $ticket->load(['replies.user']);
+
         return view('tickets.show', compact('ticket'));
     }
 
@@ -129,5 +137,61 @@ class TicketController extends Controller
         
         return redirect()->route('tickets.index')
             ->with('success', 'Ticket deleted successfully!');
+    }
+
+    /**
+     * Store a reply (chat message) for a ticket.
+     */
+    public function storeReply(Request $request, Ticket $ticket)
+    {
+        if (! $this->canAccessTicket($ticket)) {
+            abort(403);
+        }
+
+        $request->validate([
+            'message' => 'required|string',
+            'attachment' => 'nullable|file|max:5120',
+        ]);
+
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('ticket-replies', 'public');
+        }
+
+        TicketReply::create([
+            'ticket_id' => $ticket->id,
+            'user_id' => Auth::id(),
+            'message' => $request->message,
+            'attachment' => $attachmentPath,
+        ]);
+
+        return redirect()->route('tickets.show', $ticket)
+            ->with('success', 'Reply sent.');
+    }
+
+    /**
+     * Poll replies for a ticket (returns HTML partial).
+     */
+    public function pollReplies(Ticket $ticket)
+    {
+        if (! $this->canAccessTicket($ticket)) {
+            abort(403);
+        }
+
+        $ticket->load(['replies.user']);
+
+        return view('tickets.partials.replies', [
+            'ticket' => $ticket,
+        ]);
+    }
+
+    private function canAccessTicket(Ticket $ticket): bool
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return false;
+        }
+
+        return $user->is_admin || $ticket->user_id === $user->id;
     }
 }

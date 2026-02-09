@@ -3,9 +3,6 @@
 namespace App\Filament\Resources\TicketReplies\Tables;
 
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 
 class TicketRepliesTable
 {
@@ -29,17 +26,11 @@ class TicketRepliesTable
 
     public static function getActions(): array
     {
-        return [
-            EditAction::make(),
-        ];
+        return [];
     }
 
     public static function getBulkActions(): array
     {
-        return [
-            BulkActionGroup::make([
-                DeleteBulkAction::make(),
-            ]),
-        ];
+        return [];
     }
 }

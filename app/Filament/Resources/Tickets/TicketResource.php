@@ -9,6 +9,7 @@ use App\Filament\Resources\Tickets\Schemas\TicketForm;
 use App\Filament\Resources\Tickets\Tables\TicketsTable;
 use App\Models\Ticket;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,6 +22,8 @@ class TicketResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Tickets';
 
     public static function form(Schema $schema): Schema
     {
@@ -47,8 +50,13 @@ class TicketResource extends Resource
     {
         return [
             'index' => ListTickets::route('/'),
-            'create' => CreateTicket::route('/create'),
             'edit' => EditTicket::route('/{record}/edit'),
+            'conversation' => Pages\Conversation::route('/{record}/conversation'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
+
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -15,6 +18,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -27,29 +31,35 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
-    // ===== ADD THESE RELATIONSHIPS =====
+    // ===== RELATIONSHIPS =====
     
-    // Tickets created by this user
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
     }
 
-    // Tickets assigned to this user (if admin)
     public function assignedTickets()
     {
         return $this->hasMany(Ticket::class, 'assigned_admin_id');
     }
 
-    // Replies/comments by this user
     public function ticketReplies()
     {
         return $this->hasMany(TicketReply::class);
     }
 
-    
-
+public function canAccessPanel(Panel $panel): bool
+{
+    if ($panel->getId() === 'admin') {
+        return (bool) $this->is_admin;
     }
+
+    return true;
+}
+
+    
+}

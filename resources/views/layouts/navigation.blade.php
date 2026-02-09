@@ -72,18 +72,19 @@
             @endauth
 
             <!-- Login/Register buttons for guests -->
-            @guest
-            <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
-                <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-gray-900">
-                    {{ __('Log in') }}
-                </a>
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 hover:text-gray-900">
-                        {{ __('Register') }}
-                    </a>
-                @endif
-            </div>
-            @endguest
+@guest
+<div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
+    <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-gray-900">
+        {{ __('Log in') }}
+    </a>
+    <span class="text-sm text-gray-300 px-2">|</span>
+    @if (Route::has('register'))
+        <a href="{{ route('register') }}" class="text-sm text-gray-700 hover:text-gray-900">
+            {{ __('Register') }}
+        </a>
+    @endif
+</div>
+@endguest
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -115,7 +116,7 @@
             </x-responsive-nav-link>
             
             @if(Auth::user()->is_admin ?? false)
-                <x-responsive-nav-link :href="url('/admin')" target="_blank">
+                <x-responsive-nav-link :href="url('/admin')">
                     {{ __('Admin Panel') }}
                 </x-responsive-nav-link>
             @endif

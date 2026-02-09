@@ -4,21 +4,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+
 
 // Public routes
 Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/admin', function () {
-    // Check if user is logged in AND is admin
-    if (Auth::check() && Auth::user()->is_admin) {
-        // Admin user - let them through to Filament
-        return redirect('/admin'); // This will hit Filament's routes
-    }
-    // Non-admin user - redirect to dashboard or home
-    return redirect('/dashboard');
-});
 
 // Protected routes (logged in users)
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -43,3 +37,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php'; // Breeze auth routes
+

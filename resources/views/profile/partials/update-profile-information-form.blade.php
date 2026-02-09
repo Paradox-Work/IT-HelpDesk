@@ -13,9 +13,26 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
+
+        <div class="flex items-center gap-4">
+            <div class="h-16 w-16 overflow-hidden rounded-full border border-gray-200 bg-gray-50 profile-avatar">
+                @if($user->avatar && Storage::disk('public')->exists($user->avatar))
+                    <img src="{{ '/storage/' . ltrim($user->avatar, '/') }}" alt="Avatar" class="h-full w-full object-cover">
+                @else
+                    <div class="flex h-full w-full items-center justify-center text-xs text-gray-500">
+                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                    </div>
+                @endif
+            </div>
+            <div class="flex-1">
+                <x-input-label for="avatar" :value="__('Profile Photo')" />
+                <input id="avatar" name="avatar" type="file" class="mt-1 block w-full text-sm" accept="image/*" />
+                <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
+            </div>
+        </div>
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -62,3 +79,13 @@
         </div>
     </form>
 </section>
+
+<style>
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 9999px;
+        display: block;
+    }
+</style>

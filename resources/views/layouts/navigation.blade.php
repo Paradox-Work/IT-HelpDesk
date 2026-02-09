@@ -41,7 +41,16 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            <div class="flex items-center gap-2">
+                                <div class="h-7 w-7 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center text-xs font-semibold overflow-hidden nav-avatar">
+                                    @if(Auth::user()->avatar && Storage::disk('public')->exists(Auth::user()->avatar))
+                                        <img src="{{ '/storage/' . ltrim(Auth::user()->avatar, '/') }}" alt="Avatar" style="width:28px;height:28px;object-fit:cover;border-radius:9999px;display:block;">
+                                    @else
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    @endif
+                                </div>
+                                <div>{{ Auth::user()->name }}</div>
+                            </div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -161,3 +170,13 @@
         @endauth
     </div>
 </nav>
+
+<style>
+    .nav-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 9999px;
+        display: block;
+    }
+</style>

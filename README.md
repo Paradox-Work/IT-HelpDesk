@@ -1,6 +1,6 @@
 ## About Our Project (Im tired of scrolling: php artisan db:seed --class=TicketSeeder)
 
-Raivo is gay
+Raivo is my boywife xoxo
 
 Nonetheless
 For future step by step guide:

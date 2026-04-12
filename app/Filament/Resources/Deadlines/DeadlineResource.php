@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class DeadlineResource extends Resource
 {
@@ -35,10 +36,12 @@ class DeadlineResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['ticket', 'user']))
             ->columns(DeadlinesTable::getColumns())
             ->filters(DeadlinesTable::getFilters())
             ->actions(DeadlinesTable::getActions())
-            ->bulkActions(DeadlinesTable::getBulkActions());
+            ->bulkActions(DeadlinesTable::getBulkActions())
+            ->defaultSort('start_at');
     }
 
     public static function getRelations(): array

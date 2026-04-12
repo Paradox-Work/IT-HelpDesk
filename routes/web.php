@@ -17,6 +17,10 @@ Route::get('/', function () {
 // Protected routes (logged in users)
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
+        if (Auth::user()?->is_admin) {
+            return redirect('/admin');
+        }
+
         return view('dashboard');
     })->name('dashboard');
     

@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Tickets\Pages;
 
 use App\Filament\Resources\Tickets\TicketResource;
-use Filament\Actions\CreateAction;
+use App\Filament\Widgets\TicketStats;
 use Filament\Resources\Pages\ListRecords;
 
 class ListTickets extends ListRecords
@@ -13,5 +13,12 @@ class ListTickets extends ListRecords
     protected function getHeaderActions(): array
     {
         return [];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TicketStats::class,
+        ];
     }
 }

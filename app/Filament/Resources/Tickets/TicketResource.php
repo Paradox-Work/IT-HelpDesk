@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TicketResource extends Resource
 {
@@ -33,10 +34,12 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['user', 'assignedAdmin', 'latestReply.user', 'deadlines']))
             ->columns(TicketsTable::getColumns())
             ->filters(TicketsTable::getFilters())
             ->actions(TicketsTable::getActions())
-            ->bulkActions(TicketsTable::getBulkActions());
+            ->bulkActions(TicketsTable::getBulkActions())
+            ->defaultSort('updated_at', 'desc');
     }
 
     public static function getRelations(): array
@@ -59,4 +62,5 @@ class TicketResource extends Resource
     {
         return false;
     }
+
 }

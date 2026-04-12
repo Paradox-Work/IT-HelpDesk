@@ -14,6 +14,11 @@ class TicketStats extends StatsOverviewWidget
     protected function getStats(): array
     {
         $today = Carbon::now()->startOfDay();
+        $overdueDeadlines = Deadline::query()
+            ->where('status', '!=', 'completed')
+            ->whereNotNull('end_at')
+            ->where('end_at', '<', now())
+            ->count();
 
         return [
             Stat::make('Total Tickets', Ticket::count())
@@ -31,6 +36,9 @@ class TicketStats extends StatsOverviewWidget
             Stat::make('Deadlines', Deadline::count())
                 ->description('Tracked deadlines')
                 ->color('info'),
+            Stat::make('Overdue Deadlines', $overdueDeadlines)
+                ->description('Need attention')
+                ->color($overdueDeadlines > 0 ? 'danger' : 'success'),
             Stat::make('Replies Today', TicketReply::where('created_at', '>=', $today)->count())
                 ->description('Messages since midnight')
                 ->color('primary'),

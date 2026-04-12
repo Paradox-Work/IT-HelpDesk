@@ -2,7 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" onsubmit="if (this.dataset.submitting === 'true') { return false; } this.dataset.submitting = 'true'; const button = this.querySelector('button[type=submit], input[type=submit]'); if (button) { button.disabled = true; }">
         @csrf
 
         <!-- Email Address -->

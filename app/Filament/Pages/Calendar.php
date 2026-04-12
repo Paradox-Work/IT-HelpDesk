@@ -25,6 +25,13 @@ class Calendar extends Page
             ->orderBy('start_at')
             ->get()
             ->map(function (Deadline $deadline) {
+                $color = match ($deadline->status) {
+                    'completed' => '#16a34a',
+                    'cancelled' => '#6b7280',
+                    'in_progress' => '#0284c7',
+                    default => ($deadline->end_at && $deadline->end_at->isPast() ? '#dc2626' : '#d97706'),
+                };
+
                 return [
                     'id' => $deadline->id,
                     'title' => $deadline->title,
@@ -32,6 +39,9 @@ class Calendar extends Page
                     'end' => optional($deadline->end_at)->toIso8601String(),
                     'allDay' => (bool) $deadline->all_day,
                     'url' => DeadlineResource::getUrl('edit', ['record' => $deadline]),
+                    'backgroundColor' => $color,
+                    'borderColor' => $color,
+                    'textColor' => '#ffffff',
                     'extendedProps' => [
                         'status' => $deadline->status,
                         'ticket' => $deadline->ticket?->title,

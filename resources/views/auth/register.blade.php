@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" onsubmit="if (this.dataset.submitting === 'true') { return false; } this.dataset.submitting = 'true'; const button = this.querySelector('button[type=submit], input[type=submit]'); if (button) { button.disabled = true; }">
         @csrf
 
         <!-- Name -->

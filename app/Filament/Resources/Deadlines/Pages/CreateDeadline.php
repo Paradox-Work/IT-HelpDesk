@@ -12,6 +12,11 @@ class CreateDeadline extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->id();
+
+        if (blank($data['status'] ?? null)) {
+            $data['status'] = 'pending';
+        }
+
         return $data;
     }
 }
